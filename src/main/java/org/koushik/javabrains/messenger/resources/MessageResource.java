@@ -26,7 +26,7 @@ import org.koushik.javabrains.messenger.service.MessageService;
 
 @Path("/messages")
 @Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
+@Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_XML}) //per produir també xml
 public class MessageResource {
 
     MessageService messageService = new MessageService();
