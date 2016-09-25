@@ -59,5 +59,13 @@ public class MessageResource {
     public Message getMessage(@PathParam("messageId") long id) {
         return messageService.getMessage(id);
     }
+    
+    // Es reenvien totes les peticions d'aquesta URL cap a la 
+    // classe CommentResource. Allà es on s'implementen els mètodes
+    // per gestionar les peticions.
+    @Path("/{messageId}/comments")
+    public CommentResource getCommentResource(){
+        return new CommentResource();
+    }
 
 }
