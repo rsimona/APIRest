@@ -17,6 +17,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilderException;
 import javax.ws.rs.core.UriInfo;
 
 import org.koushik.javabrains.messenger.model.Message;
@@ -68,8 +69,22 @@ public class MessageResource {
 
     @GET
     @Path("/{messageId}")
-    public Message getMessage(@PathParam("messageId") long id) {
-        return messageService.getMessage(id);
+    public Message getMessage(@PathParam("messageId") long id, @Context UriInfo uriInfo) {
+        Message message = messageService.getMessage(id);
+
+        String uri = getUriForSelf(uriInfo, message);
+
+        message.addLink(uri, "self");
+        return message;
+    }
+
+    private String getUriForSelf(UriInfo uriInfo, Message message) throws UriBuilderException, IllegalArgumentException {
+        String uri = uriInfo.getBaseUriBuilder() // http://localhost:8080/messenger/webapi/
+                .path(MessageResource.class) // /messages
+                .path(Long.toString(message.getId())) // /{messageId}
+                .build()
+                .toString();
+        return uri;
     }
 
     // Es reenvien totes les peticions d'aquesta URL cap a la 
