@@ -22,7 +22,7 @@ import org.koushik.javabrains.messenger.service.CommentService;
  *
  * @author Ramon
  */
-//@Path("/") // És opcional per als subrecursos
+@Path("/") // És opcional per als subrecursos però s'ha de posar si volem que funcionin els links
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class CommentResource {

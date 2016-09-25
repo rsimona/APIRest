@@ -72,13 +72,34 @@ public class MessageResource {
     public Message getMessage(@PathParam("messageId") long id, @Context UriInfo uriInfo) {
         Message message = messageService.getMessage(id);
 
-        String uri = getUriForSelf(uriInfo, message);
+        message.addLink(getUriForSelf(uriInfo, message), "self");
+        message.addLink(getUriForProfile(uriInfo, message), "profile");
+        message.addLink(getUriForComments(uriInfo, message), "comments");
 
-        message.addLink(uri, "self");
         return message;
     }
 
-    private String getUriForSelf(UriInfo uriInfo, Message message) throws UriBuilderException, IllegalArgumentException {
+    private String getUriForComments(UriInfo uriInfo, Message message) {
+        URI uri = uriInfo.getBaseUriBuilder()
+                .path(MessageResource.class)
+                .path(MessageResource.class, "getCommentResource")
+                .path(CommentResource.class)
+                .resolveTemplate("messageId", message.getId()) //substitueix el parametre messageId de la uri per el id del missatge.
+                .build();
+
+        return uri.toString();
+    }
+
+    private String getUriForProfile(UriInfo uriInfo, Message message) {
+        URI uri = uriInfo.getBaseUriBuilder()
+                .path(ProfileResource.class)
+                .path(message.getAuthor())
+                .build();
+
+        return uri.toString();
+    }
+
+    private String getUriForSelf(UriInfo uriInfo, Message message) {
         String uri = uriInfo.getBaseUriBuilder() // http://localhost:8080/messenger/webapi/
                 .path(MessageResource.class) // /messages
                 .path(Long.toString(message.getId())) // /{messageId}
