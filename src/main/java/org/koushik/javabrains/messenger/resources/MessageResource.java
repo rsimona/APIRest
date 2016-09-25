@@ -1,5 +1,7 @@
 package org.koushik.javabrains.messenger.resources;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import javax.ws.rs.BeanParam;
 
@@ -12,7 +14,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import org.koushik.javabrains.messenger.model.Message;
 import org.koushik.javabrains.messenger.resources.beans.MessageFilterBean;
@@ -37,8 +42,15 @@ public class MessageResource {
     }
 
     @POST
-    public Message addMessage(Message message) {
-        return messageService.addMessage(message);
+    public Response addMessage(Message message, @Context UriInfo uriInfo) {
+
+        Message newMessage = messageService.addMessage(message);
+        String newId = String.valueOf(newMessage.getId());
+        // creem la uri del missatge afegit i el retornem amb la resposta
+        URI uri = uriInfo.getAbsolutePathBuilder().path(newId).build();
+        return Response.created(uri)
+                .entity(newMessage)
+                .build();
     }
 
     @PUT
@@ -59,12 +71,12 @@ public class MessageResource {
     public Message getMessage(@PathParam("messageId") long id) {
         return messageService.getMessage(id);
     }
-    
+
     // Es reenvien totes les peticions d'aquesta URL cap a la 
     // classe CommentResource. Allà es on s'implementen els mètodes
     // per gestionar les peticions.
     @Path("/{messageId}/comments")
-    public CommentResource getCommentResource(){
+    public CommentResource getCommentResource() {
         return new CommentResource();
     }
 
