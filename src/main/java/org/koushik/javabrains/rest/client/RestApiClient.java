@@ -7,6 +7,7 @@ package org.koushik.javabrains.rest.client;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Link;
@@ -37,8 +38,16 @@ public class RestApiClient {
                 .request(MediaType.APPLICATION_JSON)
                 .get(Message.class);
 
-        System.out.println(message1.getMessage());
-        System.out.println(message2.getMessage());
+        Message newMessage = new Message(4, "My New message from JAX-RS client", "Ramon");
+        Response postResponse = messagesTarget
+                .request()
+                .post(Entity.json(newMessage));
+        if (postResponse.getStatus() != 201) {
+            System.out.println("Error");
+        }
+        Message createdmMessage = postResponse.readEntity(Message.class);
+
+        System.out.println(createdmMessage.getMessage());
     }
 
 }
