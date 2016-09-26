@@ -23,16 +23,22 @@ public class RestApiClient {
     public static void main(String[] args) {
         Client client = ClientBuilder.newClient();
 
-//        WebTarget target = client.target("http://localhost:8080/messenger/webapi/messages/1");
-//        Builder builder = (Builder) target.request();
-//        Response response = builder.get();
-        Message message = client
-                .target("http://localhost:8080/messenger/webapi/messages/1")
+        WebTarget baseTarget = client.target("http://localhost:8080/messenger/webapi");
+        WebTarget messagesTarget = baseTarget.path("messages");
+        WebTarget singleMessageTarges = messagesTarget.path("{messageId}");
+
+        Message message1 = singleMessageTarges
+                .resolveTemplate("messageId", "1")
                 .request(MediaType.APPLICATION_JSON)
                 .get(Message.class);
 
-//        Message message = response.readEntity(Message.class);
-        System.out.println(message.getMessage());
+        Message message2 = singleMessageTarges
+                .resolveTemplate("messageId", "2")
+                .request(MediaType.APPLICATION_JSON)
+                .get(Message.class);
+
+        System.out.println(message1.getMessage());
+        System.out.println(message2.getMessage());
     }
 
 }
