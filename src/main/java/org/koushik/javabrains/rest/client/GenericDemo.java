@@ -22,12 +22,26 @@ public class GenericDemo {
     public static void main(String[] args) {
         Client client = ClientBuilder.newClient();
 
+//        List<Message> messages = client.target("http://localhost:8080/messenger/webapi")
+//                .path("messages")
+//                .queryParam("year", 2016)
+//                .request(MediaType.APPLICATION_JSON)
+//                .get(new GenericType<List<Message>>(){});
+//        
+//        System.out.println(messages.get(1).getAuthor());
+
         List<Message> messages = client.target("http://localhost:8080/messenger/webapi")
                 .path("messages")
-                .queryParam("year", 2016)
+//                .queryParam("year", 2016)
                 .request(MediaType.APPLICATION_JSON)
                 .get(new GenericType<List<Message>>(){});
         
-        System.out.println(messages.get(1).getAuthor());
+        for (int i=0; i<messages.size();i++){
+            Message messageAux = messages.get(i);
+            
+            System.out.println(messageAux.getMessage());
+        }
+        
+//        System.out.println(messages.toString());
     }
 }
