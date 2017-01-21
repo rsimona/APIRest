@@ -26,14 +26,14 @@ public class RestApiClient {
 
         WebTarget baseTarget = client.target("http://localhost:8080/messenger/webapi");
         WebTarget messagesTarget = baseTarget.path("messages");
-        WebTarget singleMessageTarges = messagesTarget.path("{messageId}");
+        WebTarget singleMessageTarget = messagesTarget.path("{messageId}");
 
-        Message message1 = singleMessageTarges
+        Message message1 = singleMessageTarget
                 .resolveTemplate("messageId", "1")
                 .request(MediaType.APPLICATION_JSON)
                 .get(Message.class);
 
-        Message message2 = singleMessageTarges
+        Message message2 = singleMessageTarget
                 .resolveTemplate("messageId", "2")
                 .request(MediaType.APPLICATION_JSON)
                 .get(Message.class);
